@@ -1,0 +1,10 @@
+# Force LF for everything — this repo targets Linux (Debian Trixie).
+# Makefiles and systemd units break with CRLF.
+* text=auto eol=lf
+
+*.go       text eol=lf
+*.md       text eol=lf
+*.yaml     text eol=lf
+*.yml      text eol=lf
+*.service  text eol=lf
+Makefile   text eol=lf

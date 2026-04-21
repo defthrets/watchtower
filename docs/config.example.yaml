@@ -1,0 +1,75 @@
+# Watchtower configuration — copy to ~/.watchtower/config.yaml
+#
+# Secrets (Telegram token, Tapo passwords) go in .env, NOT here.
+# Reload: `systemctl reload watchtower-*` or send SIGHUP.
+
+nats:
+  url: nats://127.0.0.1:4222
+
+api:
+  listen: "0.0.0.0:7800"
+  # Leave blank to generate on first run (written back to this file).
+  bearer_token: ""
+  trusted_cidrs:
+    - 100.64.0.0/10     # Tailscale
+    - 192.168.1.0/24    # LAN
+
+storage:
+  root: /var/lib/watchtower
+  disk_usage_cap_pct: 80
+  rotation_interval: 1h
+
+qmd:
+  output_dir: ~/qmd-memory/watchtower
+  session_quiet_seconds: 10
+
+alerts:
+  telegram:
+    enabled: true
+    # Token + chat_id come from .env (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID).
+  rate_limit:
+    per_camera_per_class: 5m
+  quiet_hours:
+    # start/end in 24h local time; empty = always alert
+    start: ""
+    end: ""
+
+cameras:
+  - name: c230
+    driver: tapo
+    rtsp: rtsp://192.168.1.X:554/stream1   # fill in real IP
+    onvif: http://192.168.1.X:2020         # fill in real IP
+    username: admin
+    # password comes from .env as TAPO_PASSWORD_C230
+    retention_days: 14
+    pre_event_seconds: 10
+    post_event_seconds: 15
+    zones:
+      # Polygons in normalized [0..1] coords, named for narrative generation.
+      # Example:
+      # - name: driveway
+      #   points: [[0.1,0.5],[0.9,0.5],[0.9,1.0],[0.1,1.0]]
+    detect:
+      person: 0.5
+      car: 0.5
+      truck: 0.5
+      bicycle: 0.5
+      motorcycle: 0.5
+      cat: 0.6
+      dog: 0.6
+      bird: 0.7
+    alerts:
+      person: true
+      car: true
+      truck: true
+      bicycle: false
+      motorcycle: true
+      cat: false
+      dog: false
+      bird: false
+    privacy_schedule: []
+      # Example:
+      # - cron: "0 8 * * 1-5"
+      #   action: enable     # enables privacy mode
+      # - cron: "0 22 * * 1-5"
+      #   action: disable

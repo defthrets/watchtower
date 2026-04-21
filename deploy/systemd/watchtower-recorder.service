@@ -1,0 +1,30 @@
+[Unit]
+Description=Watchtower recorder (event-driven MP4 clipping)
+Documentation=https://github.com/defthrets/watchtower
+After=network-online.target nats-server.service watchtower-relay.service
+Wants=network-online.target
+Requires=nats-server.service
+
+[Service]
+Type=simple
+# REQUIRED: edit for your host before enabling.
+# User=michael
+# Group=michael
+EnvironmentFile=-/etc/watchtower.env
+ExecStart=/usr/local/bin/watchtower-recorder --config %h/.watchtower/config.yaml
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/watchtower
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target

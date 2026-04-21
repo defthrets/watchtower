@@ -1,0 +1,34 @@
+[Unit]
+Description=Watchtower detector (YOLO on GPU)
+Documentation=https://github.com/defthrets/watchtower
+After=network-online.target nats-server.service watchtower-relay.service
+Wants=network-online.target
+Requires=nats-server.service
+
+[Service]
+Type=simple
+# REQUIRED: edit for your host before enabling.
+# User=michael
+# Group=michael
+# GPU access — the detector uses ONNX Runtime + CUDA on the RTX 4060 Ti.
+# Ensure the run user can read /dev/nvidia* (group "video" usually works):
+# SupplementaryGroups=video
+EnvironmentFile=-/etc/watchtower.env
+ExecStart=/usr/local/bin/watchtower-detector --config %h/.watchtower/config.yaml
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/watchtower
+PrivateTmp=true
+# NOTE: ProtectKernelModules=true can break CUDA on some setups.
+# If detector fails to init CUDA, comment these out in an override:
+ProtectKernelTunables=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target

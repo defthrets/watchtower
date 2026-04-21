@@ -1,0 +1,30 @@
+[Unit]
+Description=Watchtower relay (RTSP ingest + HLS/WebRTC fanout)
+Documentation=https://github.com/defthrets/watchtower
+After=network-online.target nats-server.service
+Wants=network-online.target
+Requires=nats-server.service
+
+[Service]
+Type=simple
+# REQUIRED: edit for your host before enabling.
+# User=michael
+# Group=michael
+EnvironmentFile=-/etc/watchtower.env
+ExecStart=/usr/local/bin/watchtower-relay --config %h/.watchtower/config.yaml
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/watchtower
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target
