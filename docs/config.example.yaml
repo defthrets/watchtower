@@ -37,10 +37,11 @@ alerts:
 cameras:
   - name: c230
     driver: tapo
-    rtsp: rtsp://192.168.1.X:554/stream1   # fill in real IP
-    onvif: http://192.168.1.X:2020         # fill in real IP
+    # stream1 = main (1080p H.264); stream2 = sub (lower res)
+    rtsp: rtsp://192.168.1.81:554/stream1
+    onvif: http://192.168.1.81:2020/onvif/device_service
     username: admin
-    # password comes from .env as TAPO_PASSWORD_C230
+    # password lives in .env as TAPO_PASSWORD_C230 — NEVER in this file
     retention_days: 14
     pre_event_seconds: 10
     post_event_seconds: 15
