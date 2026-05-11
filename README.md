@@ -165,3 +165,6 @@ oddities will land in `docs/tapo-quirks.md`.
 ## License
 
 Private. Not for redistribution.
+
+---
+*Co-authored commit via Clawd — testing GitHub's Pair Extraordinaire achievement.*
