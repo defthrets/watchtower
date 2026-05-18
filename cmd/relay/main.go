@@ -28,8 +28,8 @@ func main() {
 	}
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
-	slog.SetDefault(logger)
 	logger = logger.With("role", role)
+	slog.SetDefault(logger)
 
 	logger.Info("starting", "version", version.Version, "config", *configPath)
 
